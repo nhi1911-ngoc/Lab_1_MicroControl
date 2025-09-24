@@ -108,18 +108,18 @@ int main(void)
   };
 
 
-  void clearAllClock(){
+  /*void clearAllClock(){
   	  for (int i = 0; i < NUM_LEDS; i ++){
   		  HAL_GPIO_WritePin(LED_Port[i], LED_Pin[i], RESET);
   	  }
-    }
+    }*/
 
   void  setNumberOnClock(int num){
   	  HAL_GPIO_WritePin(LED_Port[num], LED_Pin[num], SET);
     }
-  /*void clearNumberOnClock(int num){
+  void clearNumberOnClock(int num){
 	  HAL_GPIO_WritePin(LED_Port[num], LED_Pin[num], RESET);
-  }*/
+  }
   /*void testLed(){
 	  for (int i = 0; i < NUM_LEDS; i++)
 	  	          {
@@ -129,21 +129,36 @@ int main(void)
 	  	              HAL_GPIO_WritePin(LED_Port[i], LED_Pin[i], RESET);
 	  	          }
   }*/
-  int hour = 0;
-  int minute = 10;
+  int hour = 5;
+  int minute = 55;
   int second = 0;
+
+  int prev_hour = -1, prev_minute = -1, prev_second = -1;
 
   while (1)
   {
 	  //testLed();
-	  clearAllClock();
+
 	  int hour_pos = hour % 12;
 	  int minute_pos = minute / 5;
 	  int second_pos = second / 5;
 
+	  if (prev_hour != -1 && prev_hour != hour_pos)
+	          clearNumberOnClock(prev_hour);
+	  if (prev_minute != -1 && prev_minute != minute_pos)
+	          clearNumberOnClock(prev_minute);
+	  if (prev_second != -1 && prev_second != second_pos)
+	          clearNumberOnClock(prev_second);
+
+
 	  setNumberOnClock(hour_pos);
 	  setNumberOnClock(minute_pos);
 	  setNumberOnClock(second_pos);
+
+	  prev_hour   = hour_pos;
+	  prev_minute = minute_pos;
+	  prev_second = second_pos;
+
 
 	  HAL_Delay(1000);
 	  second++;
